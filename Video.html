@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Video Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset CSS for consistency across browsers */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling for a modern, clean look */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+        }
+
+        /* Main container styling */
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Header styling */
+        h1 {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        /* Input field styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #74b9ff;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #6c5ce7;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #4c4ceb;
+            transform: translateY(-2px);
+        }
+
+        /* Message styling */
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: red;
+            display: none;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Instagram Video Downloader</h1>
+        <input type="text" id="videoUrl" placeholder="Enter Instagram video URL" required>
+        <button onclick="downloadVideo()">Download Video</button>
+        <div class="message" id="message"></div>
+        <footer>&copy; 2024 Video Downloader. All rights reserved.</footer>
+    </div>
+
+    <script>
+        // JavaScript for handling user interaction and adding dynamic effects
+        function downloadVideo() {
+            const url = document.getElementById('videoUrl').value;
+            const messageElement = document.getElementById('message');
+
+            if (!url) {
+                messageElement.textContent = 'Please enter a valid URL!';
+                messageElement.style.display = 'block';
+                return;
+            }
+
+            messageElement.style.display = 'none'; // Hide previous messages
+
+            // Placeholder for backend call
+            fetch('/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const a = document.createElement('a');
+                    a.href = data.videoUrl;
+                    a.download = 'video.mp4';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } else {
+                    messageElement.textContent = 'Failed to download video. Please try again.';
+                    messageElement.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                messageElement.textContent = 'An error occurred. Please check the URL or try again later.';
+                messageElement.style.display = 'block';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
